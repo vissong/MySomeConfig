@@ -1,0 +1,32 @@
+defescape ^Kk
+escape ^Kk
+vbell off
+
+startup_message off
+shelltitle '$ |bash'
+
+hardstatus on
+hardstatus alwayslastline
+hardstatus string "%{= kG}[ %{G}%c:%s %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][ %{C}(F1)New (F2)Rename (F3)Monitor (F4)Slience %{g}][%{kB} %d/%m %{w}%c %{g}]"
+#hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y} %m/%d %C%a "
+termcapinfo xterm|xterms|xs|rxvt ti@:te@
+bindkey -k k1 screen
+bindkey -k k2 title
+bindkey -k k3 monitor
+bindkey -k k4 silence
+bindkey -k k5 colon
+bindkey -k k9 detach
+bindkey -k k7 prev
+bindkey -k k8 next
+
+# # remove some stupid/dangerous key bindings
+bind k
+bind ^k
+bind .
+bind ^\
+bind \\
+bind ^h
+bind h
+bind l windowlist
+bindkey ^[, prev
+bindkey ^[. next
