@@ -1,0 +1,36 @@
+
+# 设置proto，protoc的相关路径
+set(PROTOBUF_INCLUDE_DIR ${CMAKE_BINARY_DIR}/deplib/include)
+set(PROTOBUF_LIBRARY ${CMAKE_BINARY_DIR}/deplib/lib/libprotobuf.a)
+set(PROTOBUF_PROTOC_EXECUTABLE ${CMAKE_BINARY_DIR}/deplib/bin/protoc)
+set(PROTOBUF_PROTOC_LIBRARY ${CMAKE_BINARY_DIR}/deplib/lib/libprotoc.a)
+# 加载 Protobuf 支持
+find_package(Protobuf REQUIRED)
+
+# function GEN_PROTO_LIB(PROTO_LIB_NAME, PROTO_DIR_PATH)
+# 在需要生成协议库的时候进行调用
+# demo:GEN_PROTO_LIB(business_proto protocol/)
+macro(GEN_PROTO_LIB PROTO_LIB_NAME PROTO_DIR_PATH)
+    # 临时变量
+    set(CMAKE_CURRENT_BINARY_DIR_BAK ${CMAKE_CURRENT_BINARY_DIR})
+    set(CMAKE_CURRENT_SOURCE_DIR_BAK ${CMAKE_CURRENT_SOURCE_DIR})
+
+    # 指定新的输出路径与源文件路径
+    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PROTO_DIR_PATH})
+    set(CMAKE_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROTO_DIR_PATH})
+    set(CMAKE_CURRENT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${PROTO_DIR_PATH})
+
+    # 目录下的所有 proto 文件
+    FILE(GLOB SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/*.proto")
+    # 生成.c,.h 文件
+    PROTOBUF_GENERATE_CPP_EX(PROTO_SRCS PROTO_HDRS ${SRC_LIST})
+    message("SRC_LIST: ${SRC_LIST}")
+    message("PROTO_SRCS: ${PROTO_SRCS}")
+    include_directories(${CMAKE_CURRENT_BINARY_DIR})
+    # 编译出静态库
+    add_library(${PROTO_LIB_NAME} ${PROTO_SRCS} ${PROTO_HDRS})
+
+    # 恢复路径
+    set(CMAKE_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR_BAK})
+    set(CMAKE_CURRENT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR_BAK})
+endmacro()
